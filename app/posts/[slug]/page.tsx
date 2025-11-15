@@ -1,7 +1,6 @@
 // app/posts/[slug]/page.tsx
 import { getPost, getPosts } from '@/lib/cosmic'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -32,6 +31,39 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   };
 }
 
+// Simple markdown to HTML converter for basic markdown syntax
+function convertMarkdownToHTML(markdown: string): string {
+  let html = markdown;
+  
+  // Convert headers
+  html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+  
+  // Convert bold
+  html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+  
+  // Convert lists
+  html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+  html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
+  
+  // Wrap consecutive list items in ul
+  html = html.replace(/(<li>.*<\/li>\n?)+/gim, '<ul>$&</ul>');
+  
+  // Convert paragraphs (lines not already in tags)
+  html = html.split('\n\n').map(paragraph => {
+    if (!paragraph.match(/^<[h|u|o]/)) {
+      return `<p>${paragraph}</p>`;
+    }
+    return paragraph;
+  }).join('\n');
+  
+  // Clean up extra whitespace
+  html = html.replace(/\n+/g, '\n');
+  
+  return html;
+}
+
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
   const post = await getPost(slug);
@@ -43,6 +75,7 @@ export default async function PostPage({ params }: PostPageProps) {
   const author = post.metadata?.author;
   const categories = post.metadata?.categories || [];
   const featuredImage = post.metadata?.featured_image;
+  const content = post.metadata?.content ? convertMarkdownToHTML(post.metadata.content) : '';
   
   return (
     <article className="py-16">
@@ -93,7 +126,7 @@ export default async function PostPage({ params }: PostPageProps) {
                   alt={author.metadata?.name || author.title}
                   width={48}
                   height={48}
-                  className="rounded-full"
+                  className="w-12 h-12 rounded-full object-cover"
                 />
               )}
               <div>
@@ -116,8 +149,8 @@ export default async function PostPage({ params }: PostPageProps) {
         
         {/* Content */}
         <div
-          className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary prose-img:rounded-lg"
-          dangerouslySetInnerHTML={{ __html: post.metadata?.content || '' }}
+          className="prose prose-lg max-w-none"
+          dangerouslySetInnerHTML={{ __html: content }}
         />
         
         {/* Author Bio */}
@@ -131,7 +164,7 @@ export default async function PostPage({ params }: PostPageProps) {
                   alt={author.metadata?.name || author.title}
                   width={96}
                   height={96}
-                  className="rounded-full"
+                  className="w-24 h-24 rounded-full object-cover flex-shrink-0"
                 />
               )}
               <div>

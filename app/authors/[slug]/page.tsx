@@ -52,7 +52,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
               alt={author.metadata?.name || author.title}
               width={192}
               height={192}
-              className="rounded-full"
+              className="w-48 h-48 rounded-full object-cover flex-shrink-0"
             />
           )}
           <div className="flex-1">

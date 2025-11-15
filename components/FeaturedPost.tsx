@@ -56,7 +56,7 @@ export default function FeaturedPost({ post }: FeaturedPostProps) {
                   alt={author.metadata?.name || author.title}
                   width={48}
                   height={48}
-                  className="rounded-full"
+                  className="w-12 h-12 rounded-full object-cover"
                 />
               )}
               <div>
