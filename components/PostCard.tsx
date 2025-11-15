@@ -64,7 +64,7 @@ export default function PostCard({ post }: PostCardProps) {
                 alt={author.metadata?.name || author.title}
                 width={40}
                 height={40}
-                className="rounded-full"
+                className="w-10 h-10 rounded-full object-cover flex-shrink-0"
               />
             )}
             <div className="flex-1 min-w-0">
