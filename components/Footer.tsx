@@ -7,9 +7,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About */}
           <div>
-            <h3 className="text-xl font-bold mb-4">🏄 Surf Travel</h3>
+            <h3 className="text-xl font-bold mb-4">🏄 Surf Shop</h3>
             <p className="text-gray-400">
-              Your ultimate guide to surf destinations, techniques, and gear reviews from expert surfers around the globe.
+              Premium surf gear and equipment for riders of all levels. Quality products, expert advice, and fast shipping.
             </p>
           </div>
           
@@ -18,42 +18,47 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <a href="/categories/destinations" className="text-gray-400 hover:text-white transition-colors">
-                  Destinations
+                <a href="/shop" className="text-gray-400 hover:text-white transition-colors">
+                  Shop All Products
                 </a>
               </li>
               <li>
-                <a href="/categories/tips-techniques" className="text-gray-400 hover:text-white transition-colors">
-                  Tips & Techniques
+                <a href="/shop?category=surfboards" className="text-gray-400 hover:text-white transition-colors">
+                  Surfboards
                 </a>
               </li>
               <li>
-                <a href="/categories/gear-reviews" className="text-gray-400 hover:text-white transition-colors">
-                  Gear Reviews
+                <a href="/shop?category=wetsuits" className="text-gray-400 hover:text-white transition-colors">
+                  Wetsuits
+                </a>
+              </li>
+              <li>
+                <a href="/shop?category=accessories" className="text-gray-400 hover:text-white transition-colors">
+                  Accessories
                 </a>
               </li>
             </ul>
           </div>
           
-          {/* Contact */}
+          {/* Customer Service */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Connect</h3>
+            <h3 className="text-lg font-semibold mb-4">Customer Service</h3>
             <p className="text-gray-400 mb-4">
-              Follow us for the latest surf travel updates and tips.
+              Questions? We're here to help! Contact our team for product recommendations and support.
             </p>
             <div className="flex gap-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 Instagram
               </a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                Twitter
+                Facebook
               </a>
             </div>
           </div>
         </div>
         
         <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
-          <p>&copy; {currentYear} Surf Travel Blog. All rights reserved.</p>
+          <p>&copy; {currentYear} Surf Shop. All rights reserved.</p>
         </div>
       </div>
     </footer>
