@@ -30,6 +30,12 @@ export default async function Header() {
                 {category.metadata?.name || category.title}
               </Link>
             ))}
+            <Link
+              href="/contact"
+              className="text-gray-700 hover:text-primary font-medium transition-colors"
+            >
+              Contact
+            </Link>
           </nav>
           
           {/* Mobile Menu Button */}
