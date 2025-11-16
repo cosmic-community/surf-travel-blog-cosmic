@@ -1,6 +1,22 @@
 import { MetadataRoute } from 'next'
 import { getPosts, getProducts, getCategories, getProductCategories, getAuthors } from '@/lib/cosmic'
 
+// Helper function to safely create a valid Date object
+function getSafeDate(dateString?: string): Date {
+  if (!dateString) {
+    return new Date()
+  }
+  
+  const date = new Date(dateString)
+  
+  // Check if date is valid
+  if (isNaN(date.getTime())) {
+    return new Date()
+  }
+  
+  return date
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://yourdomain.com'
 
@@ -44,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Blog posts
   const postPages = posts.map((post) => ({
     url: `${baseUrl}/posts/${post.slug}`,
-    lastModified: new Date(post.modified_at || post.created_at),
+    lastModified: getSafeDate(post.modified_at || post.created_at),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }))
@@ -52,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Products
   const productPages = products.map((product) => ({
     url: `${baseUrl}/shop/${product.slug}`,
-    lastModified: new Date(product.modified_at || product.created_at),
+    lastModified: getSafeDate(product.modified_at || product.created_at),
     changeFrequency: 'daily' as const,
     priority: 0.9,
   }))
