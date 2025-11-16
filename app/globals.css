@@ -3,13 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --primary: 14 165 233; /* sky-500 */
-    --primary-foreground: 255 255 255;
-    --secondary: 100 116 139; /* slate-500 */
-    --secondary-foreground: 255 255 255;
-  }
-
   body {
     @apply bg-white text-gray-900;
   }
@@ -19,68 +12,89 @@
   .container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-
-  /* Prose styling for rich text content */
-  .prose {
-    @apply text-gray-600 leading-relaxed;
-  }
-
-  .prose h1 {
-    @apply text-3xl font-bold text-gray-900 mt-8 mb-4;
-  }
-
-  .prose h2 {
-    @apply text-2xl font-bold text-gray-900 mt-6 mb-3;
-  }
-
-  .prose h3 {
-    @apply text-xl font-semibold text-gray-900 mt-4 mb-2;
-  }
-
-  .prose p {
-    @apply mb-4;
-  }
-
-  .prose ul {
-    @apply list-disc list-inside mb-4 space-y-2;
-  }
-
-  .prose li {
-    @apply text-gray-600;
-  }
-
-  .prose strong {
-    @apply font-semibold text-gray-900;
-  }
-
-  .prose a {
-    @apply text-primary hover:underline;
-  }
 }
 
 @layer utilities {
-  /* Animation utilities */
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
   .animate-fade-in {
-    animation: fade-in 0.2s ease-out;
+    animation: fadeIn 0.3s ease-in-out;
   }
+  
+  .animate-slide-in {
+    animation: slideIn 0.5s ease-out;
+  }
+}
 
-  /* Gradient utilities */
-  .gradient-primary {
-    background: linear-gradient(135deg, rgb(14 165 233) 0%, rgb(59 130 246) 100%);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
+  to {
+    opacity: 1;
+  }
+}
 
-  .gradient-secondary {
-    background: linear-gradient(135deg, rgb(100 116 139) 0%, rgb(71 85 105) 100%);
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
   }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Prose styling for rich text content */
+.prose {
+  color: #374151;
+  max-width: 65ch;
+}
+
+.prose h1 {
+  color: #111827;
+  font-weight: 800;
+  font-size: 2.25em;
+  margin-top: 0;
+  margin-bottom: 0.8888889em;
+  line-height: 1.1111111;
+}
+
+.prose h2 {
+  color: #111827;
+  font-weight: 700;
+  font-size: 1.875rem;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  line-height: 1.3333333;
+}
+
+.prose h3 {
+  color: #111827;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  line-height: 1.6;
+}
+
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.625em;
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose strong {
+  color: #111827;
+  font-weight: 600;
 }
