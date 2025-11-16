@@ -6,13 +6,12 @@ import SearchBar from '@/components/SearchBar'
 import Link from 'next/link'
 
 export default async function HomePage() {
-  // Fetch both blog posts and products
-  const [posts, categories, featuredProducts, productCategories] = await Promise.all([
+  const [posts, blogCategories, featuredProducts, productCategories] = await Promise.all([
     getPosts(),
     getCategories(),
     getFeaturedProducts(),
     getProductCategories()
-  ])
+  ]);
   
   // Get featured post (most recent)
   const featuredPost = posts[0];
@@ -41,14 +40,9 @@ export default async function HomePage() {
       {/* Blog Categories Section */}
       <section className="py-16 bg-gray-50">
         <div className="container">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Browse Blog Categories</h2>
-            <Link href="/search" className="text-primary hover:text-primary/80 font-medium">
-              View All Articles →
-            </Link>
-          </div>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">Browse Articles by Category</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {categories.map((category) => (
+            {blogCategories.map((category) => (
               <Link
                 key={category.id}
                 href={`/categories/${category.slug}`}
@@ -72,7 +66,7 @@ export default async function HomePage() {
       {/* Recent Posts Section */}
       <section className="py-16">
         <div className="container">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex justify-between items-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900">Latest Articles</h2>
             <Link href="/search" className="text-primary hover:text-primary/80 font-medium">
               View All →
@@ -89,32 +83,33 @@ export default async function HomePage() {
           )}
         </div>
       </section>
-
-      {/* Shop Section Divider */}
-      <section className="py-12 bg-gradient-to-br from-blue-600 to-blue-800">
-        <div className="container text-center text-white">
-          <h2 className="text-4xl font-bold mb-4">Premium Surf Gear</h2>
-          <p className="text-xl text-blue-100 mb-6">
-            Ride the waves with confidence. Shop our collection of high-performance surfboards, wetsuits, and accessories.
-          </p>
-          <Link
-            href="/shop"
-            className="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors text-lg"
-          >
-            Shop Now →
-          </Link>
-        </div>
-      </section>
       
-      {/* Product Categories Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-900">Shop by Category</h2>
-            <Link href="/shop" className="text-primary hover:text-primary/80 font-medium">
-              View All Products →
-            </Link>
+      {/* Featured Products Section */}
+      {featuredProducts.length > 0 && (
+        <section className="py-16 bg-gray-50">
+          <div className="container">
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">Featured Gear</h2>
+                <p className="text-gray-600">Premium surf equipment for your next adventure</p>
+              </div>
+              <Link href="/shop" className="text-primary hover:text-primary/80 font-medium">
+                Shop All →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredProducts.slice(0, 3).map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
           </div>
+        </section>
+      )}
+      
+      {/* Shop Categories Section */}
+      <section className="py-16">
+        <div className="container">
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">Shop by Category</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {productCategories.map((category) => (
               <Link
@@ -147,25 +142,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-      
-      {/* Featured Products Section */}
-      {featuredProducts.length > 0 && (
-        <section className="py-16">
-          <div className="container">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-gray-900">Featured Products</h2>
-              <Link href="/shop" className="text-primary hover:text-primary/80 font-medium">
-                View All →
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
     </div>
   )
 }

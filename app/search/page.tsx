@@ -3,7 +3,7 @@ import { getPosts, getCategories, getAuthors } from '@/lib/cosmic'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Search - Surf Travel Blog',
+  title: 'Search - Surf Hub',
   description: 'Search through our surf travel articles and stories',
 }
 

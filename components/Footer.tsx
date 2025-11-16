@@ -7,9 +7,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About */}
           <div>
-            <h3 className="text-xl font-bold mb-4">🏄 Surf Travel & Shop</h3>
+            <h3 className="text-xl font-bold mb-4">🏄 Surf Hub</h3>
             <p className="text-gray-400">
-              Your ultimate guide to surf destinations, techniques, and gear. Plus premium surf equipment for riders of all levels.
+              Your ultimate destination for surf travel stories, tips, and premium gear.
             </p>
           </div>
           
@@ -77,9 +77,6 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
-            <p className="text-gray-400 mb-4">
-              Follow us for the latest updates, tips, and product releases.
-            </p>
             <div className="flex gap-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 Instagram
@@ -87,15 +84,12 @@ export default function Footer() {
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 Twitter
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                Facebook
-              </a>
             </div>
           </div>
         </div>
         
         <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
-          <p>&copy; {currentYear} Surf Travel & Shop. All rights reserved.</p>
+          <p>&copy; {currentYear} Surf Hub. All rights reserved.</p>
         </div>
       </div>
     </footer>
