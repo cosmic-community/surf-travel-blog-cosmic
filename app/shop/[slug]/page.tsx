@@ -28,7 +28,20 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       images: product.metadata?.product_images?.[0]?.imgix_url 
         ? [`${product.metadata.product_images[0].imgix_url}?w=1200&h=630&fit=crop&auto=format,compress`]
         : [],
+      type: 'website',
+      url: `https://yourdomain.com/shop/${product.slug}`,
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.metadata?.product_name || product.title,
+      description: product.metadata?.description || '',
+      images: product.metadata?.product_images?.[0]?.imgix_url 
+        ? [`${product.metadata.product_images[0].imgix_url}?w=1200&h=630&fit=crop&auto=format,compress`]
+        : []
+    },
+    alternates: {
+      canonical: `https://yourdomain.com/shop/${product.slug}`
+    }
   }
 }
 
@@ -57,6 +70,7 @@ export default async function ProductPage({ params }: { params: Params }) {
   const price = product.metadata?.price || 0
   const inStock = product.metadata?.in_stock ?? true
   const productName = product.metadata?.product_name || product.title
+  const productDescription = product.metadata?.description || ''
 
   return (
     <div className="py-16">
@@ -134,7 +148,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             {/* Social Share */}
             <div className="mt-8 pt-8 border-t border-gray-200">
               <SocialShare
-                url={`/shop/${product.slug}`}
+                url={`https://yourdomain.com/shop/${product.slug}`}
                 title={productName}
               />
             </div>

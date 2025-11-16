@@ -3,22 +3,25 @@
 interface SocialShareProps {
   url: string
   title: string
+  description?: string
 }
 
-export default function SocialShare({ url, title }: SocialShareProps) {
-  const encodedUrl = encodeURIComponent(url)
+export default function SocialShare({ url, title, description }: SocialShareProps) {
+  const fullUrl = url.startsWith('http') ? url : `https://yourdomain.com${url}`
+  const encodedUrl = encodeURIComponent(fullUrl)
   const encodedTitle = encodeURIComponent(title)
+  const encodedDescription = description ? encodeURIComponent(description) : encodedTitle
 
   const shareLinks = {
     twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
-    pinterest: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedTitle}`,
+    pinterest: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedDescription}`,
   }
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(url)
+      await navigator.clipboard.writeText(fullUrl)
       alert('Link copied to clipboard!')
     } catch (err) {
       console.error('Failed to copy:', err)

@@ -11,13 +11,13 @@ export default function RelatedProducts({ relatedProducts }: RelatedProductsProp
   }
 
   return (
-    <section>
-      <h2 className="text-3xl font-bold text-gray-900 mb-8">Related Products</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div>
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Products</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {relatedProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
-    </section>
+    </div>
   )
 }
