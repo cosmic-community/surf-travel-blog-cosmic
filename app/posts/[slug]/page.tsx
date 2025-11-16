@@ -6,6 +6,7 @@ import type { Metadata } from 'next'
 import StructuredData from '@/components/StructuredData'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import SocialShare from '@/components/SocialShare'
+import LeadMagnet from '@/components/LeadMagnet'
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
@@ -28,9 +29,12 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
     };
   }
   
+  const content = post.metadata?.content || ''
+  const excerpt = content.substring(0, 160).replace(/#/g, '').trim()
+  
   return {
     title: `${post.metadata?.title || post.title} - Surf Travel Blog`,
-    description: post.metadata?.content?.substring(0, 160) || '',
+    description: excerpt || 'Read this surf travel article on Surf Hub',
     keywords: [
       'surf',
       'surfing',
@@ -41,7 +45,7 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
       : undefined,
     openGraph: {
       title: post.metadata?.title || post.title,
-      description: post.metadata?.content?.substring(0, 160) || '',
+      description: excerpt,
       images: post.metadata?.featured_image?.imgix_url 
         ? [`${post.metadata.featured_image.imgix_url}?w=2000&h=1000&fit=crop&auto=format,compress`]
         : [],
@@ -53,7 +57,7 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
     twitter: {
       card: 'summary_large_image',
       title: post.metadata?.title || post.title,
-      description: post.metadata?.content?.substring(0, 160) || '',
+      description: excerpt,
       images: post.metadata?.featured_image?.imgix_url 
         ? [`${post.metadata.featured_image.imgix_url}?w=2000&h=1000&fit=crop&auto=format,compress`]
         : []
@@ -194,6 +198,16 @@ export default async function PostPage({ params }: PostPageProps) {
             className="prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: content }}
           />
+          
+          {/* Lead Magnet - Strategic placement after content */}
+          <div className="mt-12">
+            <LeadMagnet
+              title="Free Surf Guide"
+              description="Get our comprehensive guide to the world's best surf spots"
+              magnetTitle="Ultimate Surf Destinations Guide 2024"
+              buttonText="Download Free Guide"
+            />
+          </div>
           
           {/* Newsletter Signup */}
           <div className="mt-12">

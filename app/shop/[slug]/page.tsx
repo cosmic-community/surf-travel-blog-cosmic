@@ -2,7 +2,7 @@
 import { getProduct, getProductsByCategory } from '@/lib/cosmic'
 import { notFound } from 'next/navigation'
 import AddToCartButton from '@/components/AddToCartButton'
-import RelatedProducts from '@/components/RelatedProducts'
+import ProductRecommendations from '@/components/ProductRecommendations'
 import SocialShare from '@/components/SocialShare'
 import StructuredData from '@/components/StructuredData'
 import type { Metadata } from 'next'
@@ -19,12 +19,21 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     }
   }
 
+  const description = product.metadata?.description || ''
+  const price = product.metadata?.price || 0
+
   return {
-    title: `${product.metadata?.product_name || product.title} - Surf Hub Shop`,
-    description: product.metadata?.description || '',
+    title: `${product.metadata?.product_name || product.title} - $${price.toFixed(2)} | Surf Hub Shop`,
+    description: description,
+    keywords: [
+      'surf gear',
+      'surfing equipment',
+      product.metadata?.category?.metadata?.category_name || '',
+      product.metadata?.product_name || product.title
+    ].filter(Boolean),
     openGraph: {
       title: product.metadata?.product_name || product.title,
-      description: product.metadata?.description || '',
+      description: description,
       images: product.metadata?.product_images?.[0]?.imgix_url 
         ? [`${product.metadata.product_images[0].imgix_url}?w=1200&h=630&fit=crop&auto=format,compress`]
         : [],
@@ -34,7 +43,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     twitter: {
       card: 'summary_large_image',
       title: product.metadata?.product_name || product.title,
-      description: product.metadata?.description || '',
+      description: description,
       images: product.metadata?.product_images?.[0]?.imgix_url 
         ? [`${product.metadata.product_images[0].imgix_url}?w=1200&h=630&fit=crop&auto=format,compress`]
         : []
@@ -53,19 +62,8 @@ export default async function ProductPage({ params }: { params: Params }) {
     notFound()
   }
 
-  // Changed: Added safe null check for category access
   const categoryId = product.metadata?.category?.id
   
-  // Changed: Added safe null check before fetching related products
-  const relatedProducts = categoryId 
-    ? await getProductsByCategory(categoryId)
-    : []
-
-  // Filter out current product from related products
-  const filteredRelated = relatedProducts
-    .filter(p => p.id !== product.id)
-    .slice(0, 3)
-
   const mainImage = product.metadata?.product_images?.[0]
   const price = product.metadata?.price || 0
   const inStock = product.metadata?.in_stock ?? true
@@ -145,6 +143,36 @@ export default async function ProductPage({ params }: { params: Params }) {
             {/* Add to Cart */}
             <AddToCartButton product={product} />
 
+            {/* Trust Badges */}
+            <div className="mt-8 pt-8 border-t border-gray-200">
+              <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Free Shipping Over $50
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  Secure Checkout
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  30-Day Returns
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                  </svg>
+                  24/7 Support
+                </div>
+              </div>
+            </div>
+
             {/* Social Share */}
             <div className="mt-8 pt-8 border-t border-gray-200">
               <SocialShare
@@ -155,10 +183,14 @@ export default async function ProductPage({ params }: { params: Params }) {
           </div>
         </div>
 
-        {/* Related Products */}
-        {filteredRelated.length > 0 && (
+        {/* Product Recommendations */}
+        {categoryId && (
           <div className="mt-16">
-            <RelatedProducts relatedProducts={filteredRelated} />
+            <ProductRecommendations 
+              currentProductId={product.id}
+              categoryId={categoryId}
+              title="You May Also Like"
+            />
           </div>
         )}
       </div>

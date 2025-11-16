@@ -4,6 +4,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { CartProvider } from '@/components/CartContext'
 import CosmicBadge from '@/components/CosmicBadge'
+import ExitIntentPopup from '@/components/ExitIntentPopup'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://yourdomain.com'),
@@ -53,8 +54,6 @@ export const metadata: Metadata = {
   verification: {
     google: 'your-google-verification-code',
     yandex: 'your-yandex-verification-code',
-    // Changed: Removed 'bing' as it's not a valid property in Next.js 16 Verification type
-    // Use 'other' object for custom verification codes
   },
   alternates: {
     canonical: 'https://yourdomain.com'
@@ -77,8 +76,24 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#0ea5e9" />
-        {/* Changed: Moved Bing verification to meta tag in head */}
         <meta name="msvalidate.01" content="your-bing-verification-code" />
+        {/* FAQ Schema for rich snippets */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'Surf Hub',
+              url: 'https://yourdomain.com',
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: 'https://yourdomain.com/search?q={search_term_string}',
+                'query-input': 'required name=search_term_string'
+              }
+            })
+          }}
+        />
       </head>
       <body>
         <CartProvider>
@@ -87,6 +102,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <ExitIntentPopup />
           <CosmicBadge bucketSlug={bucketSlug} />
         </CartProvider>
       </body>
