@@ -1,6 +1,7 @@
 import { getPosts, getCategories } from '@/lib/cosmic'
 import FeaturedPost from '@/components/FeaturedPost'
 import PostCard from '@/components/PostCard'
+import SearchBar from '@/components/SearchBar'
 import Link from 'next/link'
 
 export default async function HomePage() {
@@ -15,6 +16,21 @@ export default async function HomePage() {
     <div>
       {/* Hero Section with Featured Post */}
       {featuredPost && <FeaturedPost post={featuredPost} />}
+      
+      {/* Search Section - Added from base branch */}
+      <section className="py-12 bg-gradient-to-b from-gray-50 to-white">
+        <div className="container">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              Find Your Next Adventure
+            </h2>
+            <p className="text-gray-600">
+              Search through our collection of surf travel stories
+            </p>
+          </div>
+          <SearchBar />
+        </div>
+      </section>
       
       {/* Categories Section */}
       <section className="py-16 bg-gray-50">
