@@ -6,6 +6,7 @@ import { CartProvider } from '@/components/CartContext'
 import CosmicBadge from '@/components/CosmicBadge'
 import ExitIntentPopup from '@/components/ExitIntentPopup'
 import SocialProof from '@/components/SocialProof'
+import ConversionTracking from '@/components/ConversionTracking'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://yourdomain.com'),
@@ -84,7 +85,34 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#0ea5e9" />
         <meta name="msvalidate.01" content="your-bing-verification-code" />
-        {/* FAQ Schema for rich snippets */}
+        
+        {/* Enhanced SEO: Organization Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Surf Hub',
+              url: 'https://yourdomain.com',
+              logo: 'https://yourdomain.com/logo.png',
+              description: 'Your ultimate surf travel and gear resource',
+              sameAs: [
+                'https://twitter.com/surfhub',
+                'https://instagram.com/surfhub',
+                'https://facebook.com/surfhub'
+              ],
+              contactPoint: {
+                '@type': 'ContactPoint',
+                contactType: 'Customer Service',
+                email: 'support@surfhub.com',
+                url: 'https://yourdomain.com/contact'
+              }
+            })
+          }}
+        />
+        
+        {/* Website Search Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -111,6 +139,7 @@ export default function RootLayout({
           <Footer />
           <ExitIntentPopup />
           <SocialProof />
+          <ConversionTracking />
           <CosmicBadge bucketSlug={bucketSlug} />
         </CartProvider>
       </body>

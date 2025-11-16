@@ -1,5 +1,5 @@
 // app/posts/[slug]/page.tsx
-import { getPost, getPosts } from '@/lib/cosmic'
+import { getPost, getPosts, getPostsByCategory } from '@/lib/cosmic'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
@@ -9,6 +9,10 @@ import SocialShare from '@/components/SocialShare'
 import LeadMagnet from '@/components/LeadMagnet'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import FAQSection from '@/components/FAQSection'
+import AffiliateDisclosure from '@/components/AffiliateDisclosure'
+import TableOfContents from '@/components/TableOfContents'
+import ReadingProgress from '@/components/ReadingProgress'
+import RelatedPosts from '@/components/RelatedPosts'
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
@@ -119,6 +123,12 @@ export default async function PostPage({ params }: PostPageProps) {
   const shareUrl = `https://yourdomain.com/posts/${post.slug}`
   const shareTitle = post.metadata?.title || post.title
 
+  // Fetch related posts from same category
+  // Changed: Added explicit check for categories[0] to prevent "possibly undefined" error
+  const relatedPosts = categories.length > 0 && categories[0]
+    ? await getPostsByCategory(categories[0].id)
+    : []
+
   // Sample FAQs - in production, could be part of post metadata
   const sampleFAQs = [
     {
@@ -144,158 +154,177 @@ export default async function PostPage({ params }: PostPageProps) {
   
   return (
     <>
+      <ReadingProgress />
       <StructuredData type="article" data={post} />
       
       <article className="py-16">
-        <div className="container max-w-4xl">
-          <Breadcrumbs items={breadcrumbs} />
+        <div className="container">
+          <div className="max-w-4xl mx-auto">
+            <Breadcrumbs items={breadcrumbs} />
 
-          {/* Featured Image */}
-          {featuredImage && (
-            <div className="mb-8 rounded-lg overflow-hidden">
-              <img
-                src={`${featuredImage.imgix_url}?w=1600&h=800&fit=crop&auto=format,compress`}
-                alt={post.metadata?.title || post.title}
-                width={800}
-                height={400}
-                className="w-full h-auto"
-              />
-            </div>
-          )}
-          
-          {/* Categories */}
-          {categories.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-4">
-              {categories.map((category) => (
-                <Link
-                  key={category.id}
-                  href={`/categories/${category.slug}`}
-                  className="inline-block px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full hover:bg-primary/20 transition-colors"
-                >
-                  {category.metadata?.name || category.title}
-                </Link>
-              ))}
-            </div>
-          )}
-          
-          {/* Title */}
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            {post.metadata?.title || post.title}
-          </h1>
-          
-          {/* Author and Date */}
-          <div className="flex items-center gap-4 mb-8 pb-8 border-b border-gray-200">
-            {author && (
-              <Link
-                href={`/authors/${author.slug}`}
-                className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-              >
-                {author.metadata?.profile_photo && (
-                  <img
-                    src={`${author.metadata.profile_photo.imgix_url}?w=96&h=96&fit=crop&auto=format,compress`}
-                    alt={author.metadata?.name || author.title}
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                )}
-                <div>
-                  <p className="font-medium text-gray-900">
-                    {author.metadata?.name || author.title}
-                  </p>
-                  {post.metadata?.publish_date && (
-                    <p className="text-sm text-gray-600">
-                      {new Date(post.metadata.publish_date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </p>
-                  )}
-                </div>
-              </Link>
+            {/* Featured Image */}
+            {featuredImage && (
+              <div className="mb-8 rounded-lg overflow-hidden">
+                <img
+                  src={`${featuredImage.imgix_url}?w=1600&h=800&fit=crop&auto=format,compress`}
+                  alt={post.metadata?.title || post.title}
+                  width={800}
+                  height={400}
+                  className="w-full h-auto"
+                />
+              </div>
             )}
-          </div>
-          
-          {/* Social Share */}
-          <SocialShare url={shareUrl} title={shareTitle} />
-          
-          {/* Content */}
-          <div
-            className="prose prose-lg max-w-none"
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
-          
-          {/* FAQ Section */}
-          <div className="mt-12">
-            <FAQSection faqs={sampleFAQs} />
-          </div>
-          
-          {/* Lead Magnet - Strategic placement after content */}
-          <div className="mt-12">
-            <LeadMagnet
-              title="Free Surf Guide"
-              description="Get our comprehensive guide to the world's best surf spots"
-              magnetTitle="Ultimate Surf Destinations Guide 2024"
-              buttonText="Download Free Guide"
-            />
-          </div>
-          
-          {/* Newsletter Signup */}
-          <div className="mt-12">
-            <NewsletterSignup />
-          </div>
-          
-          {/* Author Bio */}
-          {author && (
-            <div className="mt-12 pt-8 border-t border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">About the Author</h3>
-              <div className="flex gap-4">
-                {author.metadata?.profile_photo && (
-                  <img
-                    src={`${author.metadata.profile_photo.imgix_url}?w=192&h=192&fit=crop&auto=format,compress`}
-                    alt={author.metadata?.name || author.title}
-                    width={96}
-                    height={96}
-                    className="w-24 h-24 rounded-full object-cover flex-shrink-0"
-                  />
-                )}
-                <div>
+            
+            {/* Categories */}
+            {categories.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-4">
+                {categories.map((category) => (
                   <Link
-                    href={`/authors/${author.slug}`}
-                    className="text-lg font-semibold text-gray-900 hover:text-primary transition-colors"
+                    key={category.id}
+                    href={`/categories/${category.slug}`}
+                    className="inline-block px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full hover:bg-primary/20 transition-colors"
                   >
-                    {author.metadata?.name || author.title}
+                    {category.metadata?.name || category.title}
                   </Link>
-                  <p className="text-gray-600 mt-2">{author.metadata?.bio || ''}</p>
-                  {(author.metadata?.instagram_handle || author.metadata?.twitter_handle) && (
-                    <div className="flex gap-4 mt-3">
-                      {author.metadata?.instagram_handle && (
-                        <a
-                          href={`https://instagram.com/${author.metadata.instagram_handle.replace('@', '')}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-500 hover:text-primary transition-colors"
-                        >
-                          Instagram
-                        </a>
-                      )}
-                      {author.metadata?.twitter_handle && (
-                        <a
-                          href={`https://twitter.com/${author.metadata.twitter_handle.replace('@', '')}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-500 hover:text-primary transition-colors"
-                        >
-                          Twitter
-                        </a>
+                ))}
+              </div>
+            )}
+            
+            {/* Title */}
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              {post.metadata?.title || post.title}
+            </h1>
+            
+            {/* Author and Date */}
+            <div className="flex items-center gap-4 mb-8 pb-8 border-b border-gray-200">
+              {author && (
+                <Link
+                  href={`/authors/${author.slug}`}
+                  className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                >
+                  {author.metadata?.profile_photo && (
+                    <img
+                      src={`${author.metadata.profile_photo.imgix_url}?w=96&h=96&fit=crop&auto=format,compress`}
+                      alt={author.metadata?.name || author.title}
+                      width={48}
+                      height={48}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                  )}
+                  <div>
+                    <p className="font-medium text-gray-900">
+                      {author.metadata?.name || author.title}
+                    </p>
+                    {post.metadata?.publish_date && (
+                      <p className="text-sm text-gray-600">
+                        {new Date(post.metadata.publish_date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              )}
+            </div>
+            
+            {/* Social Share */}
+            <SocialShare url={shareUrl} title={shareTitle} />
+            
+            {/* Affiliate Disclosure */}
+            <AffiliateDisclosure />
+          </div>
+
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Table of Contents - Sidebar */}
+            <div className="lg:col-span-1 hidden lg:block">
+              <TableOfContents content={post.metadata?.content || ''} />
+            </div>
+
+            {/* Main Content */}
+            <div className="lg:col-span-3 max-w-4xl">
+              {/* Content */}
+              <div
+                className="prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+              
+              {/* FAQ Section */}
+              <div className="mt-12">
+                <FAQSection faqs={sampleFAQs} />
+              </div>
+              
+              {/* Lead Magnet - Strategic placement after content */}
+              <div className="mt-12">
+                <LeadMagnet
+                  title="Free Surf Guide"
+                  description="Get our comprehensive guide to the world's best surf spots"
+                  magnetTitle="Ultimate Surf Destinations Guide 2024"
+                  buttonText="Download Free Guide"
+                />
+              </div>
+              
+              {/* Newsletter Signup */}
+              <div className="mt-12">
+                <NewsletterSignup />
+              </div>
+              
+              {/* Author Bio */}
+              {author && (
+                <div className="mt-12 pt-8 border-t border-gray-200">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">About the Author</h3>
+                  <div className="flex gap-4">
+                    {author.metadata?.profile_photo && (
+                      <img
+                        src={`${author.metadata.profile_photo.imgix_url}?w=192&h=192&fit=crop&auto=format,compress`}
+                        alt={author.metadata?.name || author.title}
+                        width={96}
+                        height={96}
+                        className="w-24 h-24 rounded-full object-cover flex-shrink-0"
+                      />
+                    )}
+                    <div>
+                      <Link
+                        href={`/authors/${author.slug}`}
+                        className="text-lg font-semibold text-gray-900 hover:text-primary transition-colors"
+                      >
+                        {author.metadata?.name || author.title}
+                      </Link>
+                      <p className="text-gray-600 mt-2">{author.metadata?.bio || ''}</p>
+                      {(author.metadata?.instagram_handle || author.metadata?.twitter_handle) && (
+                        <div className="flex gap-4 mt-3">
+                          {author.metadata?.instagram_handle && (
+                            <a
+                              href={`https://instagram.com/${author.metadata.instagram_handle.replace('@', '')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-500 hover:text-primary transition-colors"
+                            >
+                              Instagram
+                            </a>
+                          )}
+                          {author.metadata?.twitter_handle && (
+                            <a
+                              href={`https://twitter.com/${author.metadata.twitter_handle.replace('@', '')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-gray-500 hover:text-primary transition-colors"
+                            >
+                              Twitter
+                            </a>
+                          )}
+                        </div>
                       )}
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Related Posts */}
+              <RelatedPosts posts={relatedPosts} currentPostId={post.id} />
             </div>
-          )}
+          </div>
         </div>
       </article>
     </>
