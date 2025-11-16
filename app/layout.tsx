@@ -5,12 +5,27 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CosmicBadge from '@/components/CosmicBadge'
 import { CartProvider } from '@/components/CartContext'
+import StructuredData from '@/components/StructuredData'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Surf Travel Shop - Premium Surf Gear & Equipment',
-  description: 'Shop the best surfboards, wetsuits, and accessories. Free shipping on orders over $100.',
+  description: 'Shop the best surfboards, wetsuits, and accessories. Read expert surf travel guides and gear reviews. Free shipping on orders over $100.',
+  keywords: 'surf shop, surfboards, wetsuits, surf gear, surf travel, surf blog, surf accessories',
+  authors: [{ name: 'Surf Hub' }],
+  openGraph: {
+    title: 'Surf Travel Shop - Premium Surf Gear & Equipment',
+    description: 'Shop the best surfboards, wetsuits, and accessories. Read expert surf travel guides and gear reviews.',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'Surf Hub'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Surf Travel Shop - Premium Surf Gear & Equipment',
+    description: 'Shop the best surfboards, wetsuits, and accessories. Read expert surf travel guides and gear reviews.'
+  },
   icons: {
     icon: [
       {
@@ -33,6 +48,14 @@ export default function RootLayout({
       <head>
         {/* Console capture script for dashboard debugging */}
         <script src="/dashboard-console-capture.js" />
+        <StructuredData 
+          type="website" 
+          data={{
+            name: 'Surf Hub',
+            description: 'Premium surf gear and expert travel guides',
+            url: 'https://surfhub.com'
+          }} 
+        />
       </head>
       <body className={inter.className}>
         <CartProvider>

@@ -3,6 +3,7 @@ import FeaturedPost from '@/components/FeaturedPost'
 import PostCard from '@/components/PostCard'
 import ProductCard from '@/components/ProductCard'
 import SearchBar from '@/components/SearchBar'
+import NewsletterSignup from '@/components/NewsletterSignup'
 import Link from 'next/link'
 
 export default async function HomePage() {
@@ -35,6 +36,13 @@ export default async function HomePage() {
             </p>
           </div>
           <SearchBar />
+        </div>
+      </section>
+      
+      {/* Newsletter Signup Section */}
+      <section className="py-16">
+        <div className="container">
+          <NewsletterSignup />
         </div>
       </section>
       
