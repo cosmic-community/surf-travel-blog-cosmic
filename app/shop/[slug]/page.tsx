@@ -1,161 +1,159 @@
 // app/shop/[slug]/page.tsx
-import { getProduct, getProducts } from '@/lib/cosmic'
 import { notFound } from 'next/navigation'
-import type { Metadata } from 'next'
+import { getProduct, getProductsByCategory } from '@/lib/cosmic'
 import AddToCartButton from '@/components/AddToCartButton'
-import StructuredData from '@/components/StructuredData'
 import RelatedProducts from '@/components/RelatedProducts'
+import StructuredData from '@/components/StructuredData'
 
-interface ProductPageProps {
-  params: Promise<{ slug: string }>;
-}
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const product = await getProduct(slug)
 
-export async function generateStaticParams() {
-  const products = await getProducts();
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
-}
-
-export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const product = await getProduct(slug);
-  
   if (!product) {
-    return {
-      title: 'Product Not Found',
-    };
+    notFound()
   }
-  
-  const images = product.metadata?.product_images || [];
-  
-  return {
-    title: `${product.metadata?.product_name || product.title} - Surf Shop`,
-    description: product.metadata?.description || '',
-    openGraph: {
-      title: product.metadata?.product_name || product.title,
-      description: product.metadata?.description || '',
-      images: images[0]?.imgix_url
-        ? [`${images[0].imgix_url}?w=2000&h=2000&fit=crop&auto=format,compress`]
-        : [],
-      type: 'website'
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: product.metadata?.product_name || product.title,
-      description: product.metadata?.description || '',
-      images: images[0]?.imgix_url
-        ? [`${images[0].imgix_url}?w=2000&h=2000&fit=crop&auto=format,compress`]
-        : []
-    }
-  };
-}
 
-export default async function ProductPage({ params }: ProductPageProps) {
-  const { slug } = await params;
-  const product = await getProduct(slug);
-  
-  if (!product) {
-    notFound();
-  }
-  
-  const images = product.metadata?.product_images || [];
-  const mainImage = images[0];
-  const price = product.metadata?.price || 0;
-  const inStock = product.metadata?.in_stock ?? true;
-  const stockQuantity = product.metadata?.stock_quantity || 0;
-  
+  // Get related products from the same category
+  const relatedProducts = product.metadata.category?.id
+    ? await getProductsByCategory(product.metadata.category.id)
+    : []
+
+  // Filter out the current product from related products
+  const filteredRelated = relatedProducts.filter(p => p.id !== product.id).slice(0, 4)
+
   return (
     <>
       <StructuredData type="product" data={product} />
       
-      <div className="py-16">
-        <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Product Images */}
-            <div>
-              {mainImage && (
-                <div className="mb-4 rounded-lg overflow-hidden bg-gray-100">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
+          {/* Product Images */}
+          <div className="space-y-4">
+            {product.metadata.product_images && product.metadata.product_images.length > 0 ? (
+              <>
+                <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                   <img
-                    src={`${mainImage.imgix_url}?w=1200&h=1200&fit=crop&auto=format,compress`}
-                    alt={product.metadata?.product_name || product.title}
-                    className="w-full h-auto"
+                    src={`${product.metadata.product_images[0]?.imgix_url}?w=1200&h=1200&fit=crop&auto=format,compress`}
+                    alt={product.metadata.product_name || product.title}
+                    className="w-full h-full object-cover"
                   />
                 </div>
-              )}
-              {images.length > 1 && (
-                <div className="grid grid-cols-4 gap-4">
-                  {images.slice(1, 5).map((image, index) => (
-                    <div key={index} className="rounded-lg overflow-hidden bg-gray-100">
-                      <img
-                        src={`${image.imgix_url}?w=400&h=400&fit=crop&auto=format,compress`}
-                        alt={`${product.metadata?.product_name || product.title} ${index + 2}`}
-                        className="w-full h-auto"
-                      />
-                    </div>
-                  ))}
-                </div>
+                {product.metadata.product_images.length > 1 && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {product.metadata.product_images.slice(1).map((image, index) => (
+                      image?.imgix_url && (
+                        <div key={index} className="aspect-square rounded-lg overflow-hidden bg-gray-100">
+                          <img
+                            src={`${image.imgix_url}?w=400&h=400&fit=crop&auto=format,compress`}
+                            alt={`${product.metadata.product_name || product.title} view ${index + 2}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="aspect-square rounded-lg bg-gray-100 flex items-center justify-center">
+                <span className="text-gray-400">No image available</span>
+              </div>
+            )}
+          </div>
+
+          {/* Product Info */}
+          <div>
+            <div className="mb-4">
+              {product.metadata.category && (
+                <span className="text-sm text-primary font-semibold">
+                  {product.metadata.category.metadata?.category_name || product.metadata.category.title}
+                </span>
               )}
             </div>
             
-            {/* Product Info */}
-            <div>
-              {/* Category */}
-              {product.metadata?.category && (
-                <p className="text-sm text-primary font-medium mb-2">
-                  {product.metadata.category.metadata?.category_name || product.metadata.category.title}
-                </p>
-              )}
-              
-              {/* Product Name */}
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                {product.metadata?.product_name || product.title}
-              </h1>
-              
-              {/* Price */}
-              <p className="text-3xl font-bold text-primary mb-6">
-                ${price.toFixed(2)}
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              {product.metadata.product_name || product.title}
+            </h1>
+            
+            <div className="text-3xl font-bold text-primary mb-6">
+              ${product.metadata.price?.toFixed(2)}
+            </div>
+
+            <div className="prose prose-lg mb-8">
+              <p className="text-gray-600 leading-relaxed">
+                {product.metadata.description}
               </p>
-              
-              {/* Stock Status */}
-              {inStock ? (
-                <p className="text-green-600 font-medium mb-6">
-                  In Stock ({stockQuantity} available)
-                </p>
+            </div>
+
+            {/* Stock Status */}
+            <div className="mb-6">
+              {product.metadata.in_stock ? (
+                <div className="flex items-center text-green-600">
+                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-semibold">In Stock</span>
+                  {product.metadata.stock_quantity && (
+                    <span className="ml-2 text-gray-600">
+                      ({product.metadata.stock_quantity} available)
+                    </span>
+                  )}
+                </div>
               ) : (
-                <p className="text-red-600 font-medium mb-6">
-                  Out of Stock
-                </p>
+                <div className="flex items-center text-red-600">
+                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-semibold">Out of Stock</span>
+                </div>
               )}
-              
-              {/* Add to Cart Button */}
-              {inStock && <AddToCartButton product={product} />}
-              
-              {/* Description */}
-              <div className="mt-8 pt-8 border-t border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Description</h2>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                  {product.metadata?.description || ''}
-                </p>
-              </div>
-              
-              {/* Product Details */}
-              <div className="mt-8 pt-8 border-t border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Product Details</h2>
-                <ul className="space-y-2 text-gray-700">
-                  <li>• High-quality construction</li>
-                  <li>• Designed for performance</li>
-                  <li>• Free shipping on orders over $100</li>
-                  <li>• 30-day return policy</li>
-                </ul>
-              </div>
+            </div>
+
+            {/* Add to Cart */}
+            <AddToCartButton product={product} />
+
+            {/* Product Features */}
+            <div className="mt-8 pt-8 border-t border-gray-200">
+              <h3 className="font-semibold text-gray-900 mb-4">Product Features</h3>
+              <ul className="space-y-2 text-gray-600">
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-primary mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span>Premium quality materials</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-primary mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span>Fast shipping available</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-primary mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span>30-day return policy</span>
+                </li>
+                <li className="flex items-start">
+                  <svg className="w-5 h-5 text-primary mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span>Expert customer support</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
+
+        {/* Related Products */}
+        {filteredRelated.length > 0 && (
+          <RelatedProducts products={filteredRelated} />
+        )}
       </div>
-      
-      {/* Related Products */}
-      <RelatedProducts currentProduct={product} />
     </>
   )
 }

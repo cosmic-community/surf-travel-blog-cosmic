@@ -44,8 +44,12 @@ export async function subscribeToNewsletter(formData: FormData): Promise<Newslet
         }
       }
     } catch (error) {
-      // 404 means no existing subscriber, which is fine
+        // 404 means no existing subscriber, which is fine
     }
+
+    // Format date as YYYY-MM-DD for Cosmic date field
+    const today = new Date()
+    const formattedDate = today.toISOString().split('T')[0] // Gets YYYY-MM-DD format
 
     // Create subscriber in Cosmic
     await cosmic.objects.insertOne({
@@ -53,7 +57,7 @@ export async function subscribeToNewsletter(formData: FormData): Promise<Newslet
       type: 'newsletter-subscribers',
       metadata: {
         email,
-        subscribed_at: new Date().toISOString(),
+        subscribed_at: formattedDate, // Changed: Use YYYY-MM-DD format instead of ISO string
         status: 'Active'
       }
     })
