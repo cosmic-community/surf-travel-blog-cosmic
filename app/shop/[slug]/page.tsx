@@ -36,11 +36,13 @@ export default async function ProductPage({
             {product.metadata.product_images && product.metadata.product_images.length > 0 ? (
               <>
                 <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
-                  <img
-                    src={`${product.metadata.product_images[0]?.imgix_url}?w=1200&h=1200&fit=crop&auto=format,compress`}
-                    alt={product.metadata.product_name || product.title}
-                    className="w-full h-full object-cover"
-                  />
+                  {product.metadata.product_images[0]?.imgix_url && (
+                    <img
+                      src={`${product.metadata.product_images[0].imgix_url}?w=1200&h=1200&fit=crop&auto=format,compress`}
+                      alt={product.metadata.product_name || product.title}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </div>
                 {product.metadata.product_images.length > 1 && (
                   <div className="grid grid-cols-4 gap-2">
