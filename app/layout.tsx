@@ -53,9 +53,8 @@ export const metadata: Metadata = {
   verification: {
     google: 'your-google-verification-code',
     yandex: 'your-yandex-verification-code',
-    other: {
-      bing: 'your-bing-verification-code'
-    }
+    // Changed: Removed 'bing' as it's not a valid property in Next.js 16 Verification type
+    // Use 'other' object for custom verification codes
   },
   alternates: {
     canonical: 'https://yourdomain.com'
@@ -78,6 +77,8 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#0ea5e9" />
+        {/* Changed: Moved Bing verification to meta tag in head */}
+        <meta name="msvalidate.01" content="your-bing-verification-code" />
       </head>
       <body>
         <CartProvider>

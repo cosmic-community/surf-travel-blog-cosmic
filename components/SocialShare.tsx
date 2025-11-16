@@ -3,7 +3,7 @@
 interface SocialShareProps {
   url: string
   title: string
-  description?: string
+  description?: string // Changed: Made description optional to match usage
 }
 
 export default function SocialShare({ url, title, description }: SocialShareProps) {
