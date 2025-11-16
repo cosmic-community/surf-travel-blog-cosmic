@@ -2,40 +2,35 @@
 
 import { cosmic } from '@/lib/cosmic'
 
-export async function subscribeToNewsletter(email: string): Promise<{ success: boolean; message: string }> {
+// Changed: Accept email string directly instead of FormData
+export async function subscribeToNewsletter(email: string) {
   try {
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
+    if (!email || !email.includes('@')) {
       return {
         success: false,
-        message: 'Please enter a valid email address'
+        message: 'Please provide a valid email address'
       }
     }
 
     // Check if email already exists
     try {
-      const existingSubscriber = await cosmic.objects.find({
+      const existingSubscriber = await cosmic.objects.findOne({
         type: 'newsletter-subscribers',
         'metadata.email': email
       })
 
-      if (existingSubscriber.objects.length > 0) {
+      if (existingSubscriber) {
         return {
           success: false,
-          message: 'This email is already subscribed'
+          message: 'This email is already subscribed to our newsletter'
         }
       }
     } catch (error) {
-      // 404 means no existing subscriber, which is what we want
-      if (error && typeof error === 'object' && 'status' in error && error.status !== 404) {
-        throw error
-      }
+      // 404 means email doesn't exist, which is what we want
     }
 
-    // Format date as YYYY-MM-DD for Cosmic date metafield
-    const today = new Date()
-    const formattedDate = today.toISOString().split('T')[0] // Format: YYYY-MM-DD
+    // Changed: Format date as YYYY-MM-DD for Cosmic date metafield
+    const currentDate = new Date().toISOString().split('T')[0]
 
     // Create new subscriber
     await cosmic.objects.insertOne({
@@ -43,20 +38,20 @@ export async function subscribeToNewsletter(email: string): Promise<{ success: b
       type: 'newsletter-subscribers',
       metadata: {
         email: email,
-        subscribed_at: formattedDate,
+        subscribed_at: currentDate,
         status: 'Active'
       }
     })
 
     return {
       success: true,
-      message: '🎉 Successfully subscribed! Check your inbox for a welcome email.'
+      message: 'Successfully subscribed! Check your inbox for confirmation.'
     }
   } catch (error) {
     console.error('Newsletter subscription error:', error)
     return {
       success: false,
-      message: 'Something went wrong. Please try again later.'
+      message: 'Failed to subscribe. Please try again later.'
     }
   }
 }
