@@ -58,7 +58,7 @@ export async function sendContactEmail(formData: FormData): Promise<ContactFormR
           <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
           
           <p style="color: #666; font-size: 12px;">
-            This message was sent from the Surf Travel Blog contact form.
+            This message was sent from the Surf Hub contact form.
           </p>
         </div>
       `,
@@ -72,7 +72,7 @@ Message:
 ${message}
 
 ---
-This message was sent from the Surf Travel Blog contact form.
+This message was sent from the Surf Hub contact form.
       `
     })
 

@@ -2,8 +2,8 @@ import { Metadata } from 'next'
 import ContactForm from '@/components/ContactForm'
 
 export const metadata: Metadata = {
-  title: 'Contact Us - Surf Travel Blog',
-  description: 'Get in touch with us for surf travel tips, collaboration opportunities, or general inquiries.',
+  title: 'Contact Us - Surf Hub',
+  description: 'Get in touch with us for surf travel tips, gear questions, collaboration opportunities, or general inquiries.',
 }
 
 export default function ContactPage() {
@@ -14,7 +14,7 @@ export default function ContactPage() {
           Get in Touch
         </h1>
         <p className="text-lg text-gray-600 mb-8">
-          Have questions about surf destinations, gear, or techniques? Want to collaborate? 
+          Have questions about surf destinations, gear, or techniques? Want to collaborate or need help with an order? 
           We'd love to hear from you! Fill out the form below and we'll get back to you as soon as possible.
         </p>
         

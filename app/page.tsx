@@ -1,16 +1,22 @@
-import { getPosts, getCategories } from '@/lib/cosmic'
+import { getPosts, getCategories, getFeaturedProducts, getProductCategories } from '@/lib/cosmic'
 import FeaturedPost from '@/components/FeaturedPost'
 import PostCard from '@/components/PostCard'
+import ProductCard from '@/components/ProductCard'
 import SearchBar from '@/components/SearchBar'
 import Link from 'next/link'
 
 export default async function HomePage() {
-  const posts = await getPosts();
-  const categories = await getCategories();
+  // Fetch both blog and e-commerce data
+  const [posts, blogCategories, featuredProducts, productCategories] = await Promise.all([
+    getPosts(),
+    getCategories(),
+    getFeaturedProducts(),
+    getProductCategories()
+  ])
   
   // Get featured post (most recent)
-  const featuredPost = posts[0];
-  const otherPosts = posts.slice(1);
+  const featuredPost = posts[0]
+  const otherPosts = posts.slice(1, 4) // Show 3 recent posts
   
   return (
     <div>
@@ -32,12 +38,12 @@ export default async function HomePage() {
         </div>
       </section>
       
-      {/* Categories Section */}
+      {/* Blog Categories Section */}
       <section className="py-16 bg-gray-50">
         <div className="container">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Browse by Category</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">Browse Articles</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {categories.map((category) => (
+            {blogCategories.map((category) => (
               <Link
                 key={category.id}
                 href={`/categories/${category.slug}`}
@@ -61,7 +67,15 @@ export default async function HomePage() {
       {/* Recent Posts Section */}
       <section className="py-16">
         <div className="container">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Latest Articles</h2>
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900">Latest Articles</h2>
+            <Link 
+              href="/search" 
+              className="text-primary font-medium hover:text-primary/80 transition-colors"
+            >
+              View All →
+            </Link>
+          </div>
           {otherPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {otherPosts.map((post) => (
@@ -73,6 +87,67 @@ export default async function HomePage() {
           )}
         </div>
       </section>
+      
+      {/* Featured Products Section - from your branch */}
+      {featuredProducts.length > 0 && (
+        <section className="py-16 bg-gray-50">
+          <div className="container">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900">Featured Products</h2>
+              <Link 
+                href="/shop" 
+                className="text-primary font-medium hover:text-primary/80 transition-colors"
+              >
+                Shop All →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredProducts.slice(0, 3).map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+      
+      {/* Product Categories Section - from your branch */}
+      {productCategories.length > 0 && (
+        <section className="py-16">
+          <div className="container">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8">Shop by Category</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {productCategories.map((category) => (
+                <Link
+                  key={category.id}
+                  href={`/shop?category=${category.slug}`}
+                  className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
+                >
+                  {category.metadata?.category_image && (
+                    <div className="h-48 overflow-hidden">
+                      <img
+                        src={`${category.metadata.category_image.imgix_url}?w=800&h=400&fit=crop&auto=format,compress`}
+                        alt={category.metadata?.category_name || category.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                      />
+                    </div>
+                  )}
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                      {category.metadata?.category_name || category.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      {category.metadata?.description || ''}
+                    </p>
+                    <span className="text-primary font-medium group-hover:underline">
+                      Browse Products →
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   )
 }
