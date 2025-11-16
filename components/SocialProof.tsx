@@ -43,13 +43,16 @@ export default function SocialProof() {
     // Show a random action every 15 seconds
     const showAction = () => {
       const randomAction = recentActions[Math.floor(Math.random() * recentActions.length)]
-      setCurrentAction(randomAction)
-      setIsVisible(true)
+      // Fixed: Add undefined check before setting state
+      if (randomAction) {
+        setCurrentAction(randomAction)
+        setIsVisible(true)
 
-      // Hide after 5 seconds
-      setTimeout(() => {
-        setIsVisible(false)
-      }, 5000)
+        // Hide after 5 seconds
+        setTimeout(() => {
+          setIsVisible(false)
+        }, 5000)
+      }
     }
 
     // Show first action after 3 seconds
