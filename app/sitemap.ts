@@ -58,7 +58,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  // Blog posts - Changed: Use getSafeDate to prevent Invalid time value errors
+  // Blog posts - Use getSafeDate to prevent Invalid time value errors
   const postPages = posts.map((post) => ({
     url: `${baseUrl}/posts/${post.slug}`,
     lastModified: getSafeDate(post.modified_at || post.created_at),
@@ -66,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  // Products - Changed: Use getSafeDate to prevent Invalid time value errors
+  // Products - Use getSafeDate to prevent Invalid time value errors
   const productPages = products.map((product) => ({
     url: `${baseUrl}/shop/${product.slug}`,
     lastModified: getSafeDate(product.modified_at || product.created_at),
