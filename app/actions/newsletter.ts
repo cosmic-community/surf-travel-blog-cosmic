@@ -2,8 +2,17 @@
 
 import { cosmic } from '@/lib/cosmic'
 
-export async function subscribeToNewsletter(email: string) {
+export async function subscribeToNewsletter(formData: FormData) {
   try {
+    const email = formData.get('email') as string
+    
+    if (!email || typeof email !== 'string') {
+      return { 
+        success: false, 
+        message: 'Please provide a valid email address.' 
+      }
+    }
+
     // Create subscriber object in Cosmic
     await cosmic.objects.insertOne({
       title: email,

@@ -31,7 +31,7 @@ export default function NewsletterSignup() {
       } else {
         setStatus({
           type: 'error',
-          message: result.error || 'Something went wrong. Please try again.'
+          message: result.message || 'Something went wrong. Please try again.'
         })
       }
     } catch (error) {
