@@ -7,6 +7,8 @@ import StructuredData from '@/components/StructuredData'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import SocialShare from '@/components/SocialShare'
 import LeadMagnet from '@/components/LeadMagnet'
+import Breadcrumbs from '@/components/Breadcrumbs'
+import FAQSection from '@/components/FAQSection'
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
@@ -116,6 +118,29 @@ export default async function PostPage({ params }: PostPageProps) {
   
   const shareUrl = `https://yourdomain.com/posts/${post.slug}`
   const shareTitle = post.metadata?.title || post.title
+
+  // Sample FAQs - in production, could be part of post metadata
+  const sampleFAQs = [
+    {
+      question: 'What\'s the best time to visit this surf destination?',
+      answer: 'The best time depends on your skill level and wave preferences. Generally, the dry season offers the most consistent conditions with offshore winds.'
+    },
+    {
+      question: 'What equipment do I need?',
+      answer: 'The essential equipment includes a suitable surfboard for the conditions, wetsuit (if needed), leash, wax, and reef booties for rocky breaks.'
+    },
+    {
+      question: 'Is this suitable for beginners?',
+      answer: 'Some sections are beginner-friendly, but it\'s best to assess the conditions on the day. We recommend taking a lesson with a local surf school for your first session.'
+    }
+  ]
+
+  const breadcrumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Blog', href: '/search' },
+    { label: categories[0]?.metadata?.name || 'Articles', href: categories[0] ? `/categories/${categories[0].slug}` : '/search' },
+    { label: post.metadata?.title || post.title }
+  ]
   
   return (
     <>
@@ -123,6 +148,8 @@ export default async function PostPage({ params }: PostPageProps) {
       
       <article className="py-16">
         <div className="container max-w-4xl">
+          <Breadcrumbs items={breadcrumbs} />
+
           {/* Featured Image */}
           {featuredImage && (
             <div className="mb-8 rounded-lg overflow-hidden">
@@ -198,6 +225,11 @@ export default async function PostPage({ params }: PostPageProps) {
             className="prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: content }}
           />
+          
+          {/* FAQ Section */}
+          <div className="mt-12">
+            <FAQSection faqs={sampleFAQs} />
+          </div>
           
           {/* Lead Magnet - Strategic placement after content */}
           <div className="mt-12">

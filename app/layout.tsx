@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import { CartProvider } from '@/components/CartContext'
 import CosmicBadge from '@/components/CosmicBadge'
 import ExitIntentPopup from '@/components/ExitIntentPopup'
+import SocialProof from '@/components/SocialProof'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://yourdomain.com'),
@@ -109,6 +110,7 @@ export default function RootLayout({
           </main>
           <Footer />
           <ExitIntentPopup />
+          <SocialProof />
           <CosmicBadge bucketSlug={bucketSlug} />
         </CartProvider>
       </body>
