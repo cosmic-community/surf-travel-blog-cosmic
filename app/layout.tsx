@@ -18,6 +18,14 @@ export const metadata: Metadata = {
   authors: [{ name: 'Surf Hub Team', url: 'https://yourdomain.com' }],
   creator: 'Surf Hub',
   publisher: 'Surf Hub',
+  icons: {
+    icon: [
+      {
+        url: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏄</text></svg>',
+        type: 'image/svg+xml'
+      }
+    ]
+  },
   openGraph: {
     title: 'Surf Hub - Surf Travel Blog & Gear Shop',
     description: 'Discover the best surf destinations, learn surfing techniques, and shop premium surf equipment.',
@@ -74,8 +82,6 @@ export default function RootLayout({
       <head>
         <link rel="canonical" href="https://yourdomain.com" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#0ea5e9" />
         <meta name="msvalidate.01" content="your-bing-verification-code" />
         {/* FAQ Schema for rich snippets */}
