@@ -5,6 +5,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import StructuredData from '@/components/StructuredData'
 import NewsletterSignup from '@/components/NewsletterSignup'
+import SocialShare from '@/components/SocialShare'
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
@@ -30,6 +31,14 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   return {
     title: `${post.metadata?.title || post.title} - Surf Travel Blog`,
     description: post.metadata?.content?.substring(0, 160) || '',
+    keywords: [
+      'surf',
+      'surfing',
+      ...(post.metadata?.categories?.map(c => c.metadata?.name || c.title) || [])
+    ],
+    authors: post.metadata?.author?.metadata?.name 
+      ? [{ name: post.metadata.author.metadata.name }]
+      : undefined,
     openGraph: {
       title: post.metadata?.title || post.title,
       description: post.metadata?.content?.substring(0, 160) || '',
@@ -38,7 +47,8 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
         : [],
       type: 'article',
       publishedTime: post.metadata?.publish_date,
-      authors: post.metadata?.author?.metadata?.name || post.metadata?.author?.title
+      authors: post.metadata?.author?.metadata?.name || post.metadata?.author?.title,
+      url: `https://yourdomain.com/posts/${post.slug}`,
     },
     twitter: {
       card: 'summary_large_image',
@@ -47,6 +57,9 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
       images: post.metadata?.featured_image?.imgix_url 
         ? [`${post.metadata.featured_image.imgix_url}?w=2000&h=1000&fit=crop&auto=format,compress`]
         : []
+    },
+    alternates: {
+      canonical: `https://yourdomain.com/posts/${post.slug}`
     }
   };
 }
@@ -96,6 +109,9 @@ export default async function PostPage({ params }: PostPageProps) {
   const categories = post.metadata?.categories || [];
   const featuredImage = post.metadata?.featured_image;
   const content = post.metadata?.content ? convertMarkdownToHTML(post.metadata.content) : '';
+  
+  const shareUrl = `https://yourdomain.com/posts/${post.slug}`
+  const shareTitle = post.metadata?.title || post.title
   
   return (
     <>
@@ -169,6 +185,9 @@ export default async function PostPage({ params }: PostPageProps) {
               </Link>
             )}
           </div>
+          
+          {/* Social Share */}
+          <SocialShare url={shareUrl} title={shareTitle} />
           
           {/* Content */}
           <div

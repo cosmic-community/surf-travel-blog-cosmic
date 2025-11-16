@@ -18,7 +18,7 @@ export default async function ProductPage({
   }
 
   // Get related products from the same category
-  const relatedProducts = product.metadata.category?.id
+  const relatedProducts = product.metadata?.category?.id
     ? await getProductsByCategory(product.metadata.category.id)
     : []
 
@@ -33,13 +33,13 @@ export default async function ProductPage({
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           {/* Product Images */}
           <div className="space-y-4">
-            {product.metadata.product_images && product.metadata.product_images.length > 0 ? (
+            {product.metadata?.product_images && product.metadata.product_images.length > 0 ? (
               <>
                 <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                   {product.metadata.product_images[0]?.imgix_url && (
                     <img
                       src={`${product.metadata.product_images[0].imgix_url}?w=1200&h=1200&fit=crop&auto=format,compress`}
-                      alt={product.metadata.product_name || product.title}
+                      alt={product.metadata?.product_name || product.title}
                       className="w-full h-full object-cover"
                     />
                   )}
@@ -51,7 +51,7 @@ export default async function ProductPage({
                         <div key={index} className="aspect-square rounded-lg overflow-hidden bg-gray-100">
                           <img
                             src={`${image.imgix_url}?w=400&h=400&fit=crop&auto=format,compress`}
-                            alt={`${product.metadata.product_name || product.title} view ${index + 2}`}
+                            alt={`${product.metadata?.product_name || product.title} view ${index + 2}`}
                             className="w-full h-full object-cover"
                           />
                         </div>
@@ -70,7 +70,7 @@ export default async function ProductPage({
           {/* Product Info */}
           <div>
             <div className="mb-4">
-              {product.metadata.category && (
+              {product.metadata?.category && (
                 <span className="text-sm text-primary font-semibold">
                   {product.metadata.category.metadata?.category_name || product.metadata.category.title}
                 </span>
@@ -78,22 +78,22 @@ export default async function ProductPage({
             </div>
             
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              {product.metadata.product_name || product.title}
+              {product.metadata?.product_name || product.title}
             </h1>
             
             <div className="text-3xl font-bold text-primary mb-6">
-              ${product.metadata.price?.toFixed(2)}
+              ${product.metadata?.price?.toFixed(2)}
             </div>
 
             <div className="prose prose-lg mb-8">
               <p className="text-gray-600 leading-relaxed">
-                {product.metadata.description}
+                {product.metadata?.description}
               </p>
             </div>
 
             {/* Stock Status */}
             <div className="mb-6">
-              {product.metadata.in_stock ? (
+              {product.metadata?.in_stock ? (
                 <div className="flex items-center text-green-600">
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -153,7 +153,7 @@ export default async function ProductPage({
 
         {/* Related Products */}
         {filteredRelated.length > 0 && (
-          <RelatedProducts products={filteredRelated} />
+          <RelatedProducts relatedProducts={filteredRelated} />
         )}
       </div>
     </>
