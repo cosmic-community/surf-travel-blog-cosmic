@@ -7,6 +7,7 @@ function getSafeDate(dateString?: string): Date {
     return new Date()
   }
   
+  // Try to parse the date string
   const date = new Date(dateString)
   
   // Check if date is valid
