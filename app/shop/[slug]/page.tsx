@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     openGraph: {
       title: product.metadata?.product_name || product.title,
       description: product.metadata?.description || '',
-      images: images.length > 0 
+      images: images[0]?.imgix_url
         ? [`${images[0].imgix_url}?w=2000&h=2000&fit=crop&auto=format,compress`]
         : [],
       type: 'website'
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
       card: 'summary_large_image',
       title: product.metadata?.product_name || product.title,
       description: product.metadata?.description || '',
-      images: images.length > 0 
+      images: images[0]?.imgix_url
         ? [`${images[0].imgix_url}?w=2000&h=2000&fit=crop&auto=format,compress`]
         : []
     }
