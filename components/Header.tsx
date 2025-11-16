@@ -17,8 +17,8 @@ export default async function Header() {
             🏄 Surf Hub
           </Link>
           
-          {/* Navigation - Merged both blog and shop features */}
-          <nav className="hidden md:flex items-center gap-6">
+          {/* Navigation - merged both branches */}
+          <nav className="hidden md:flex items-center gap-8">
             <Link
               href="/"
               className="text-gray-700 hover:text-primary font-medium transition-colors"
@@ -45,7 +45,7 @@ export default async function Header() {
               Shop
             </Link>
             
-            {/* Search */}
+            {/* Search Link - from base branch */}
             <Link
               href="/search"
               className="flex items-center gap-2 text-gray-700 hover:text-primary font-medium transition-colors"
@@ -61,7 +61,7 @@ export default async function Header() {
               Search
             </Link>
             
-            {/* Contact */}
+            {/* Contact Link - from base branch */}
             <Link
               href="/contact"
               className="text-gray-700 hover:text-primary font-medium transition-colors"
@@ -70,7 +70,7 @@ export default async function Header() {
             </Link>
           </nav>
           
-          {/* Cart Button */}
+          {/* Cart Button - from your branch */}
           <CartButton />
         </div>
       </div>
