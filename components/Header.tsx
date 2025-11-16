@@ -6,7 +6,7 @@ export default async function Header() {
   const [blogCategories, productCategories] = await Promise.all([
     getCategories(),
     getProductCategories()
-  ]);
+  ])
   
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -17,8 +17,8 @@ export default async function Header() {
             🏄 Surf Hub
           </Link>
           
-          {/* Navigation - merged both blog and shop navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          {/* Navigation - Merged both blog and shop features */}
+          <nav className="hidden md:flex items-center gap-6">
             <Link
               href="/"
               className="text-gray-700 hover:text-primary font-medium transition-colors"
@@ -45,7 +45,7 @@ export default async function Header() {
               Shop
             </Link>
             
-            {/* Search Link */}
+            {/* Search */}
             <Link
               href="/search"
               className="flex items-center gap-2 text-gray-700 hover:text-primary font-medium transition-colors"
@@ -61,7 +61,7 @@ export default async function Header() {
               Search
             </Link>
             
-            {/* Contact Link */}
+            {/* Contact */}
             <Link
               href="/contact"
               className="text-gray-700 hover:text-primary font-medium transition-colors"

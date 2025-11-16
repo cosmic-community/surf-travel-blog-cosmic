@@ -77,12 +77,18 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
+            <p className="text-gray-400 mb-4 text-sm">
+              Follow us for updates, tips, and new products.
+            </p>
             <div className="flex gap-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 Instagram
               </a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 Twitter
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                Facebook
               </a>
             </div>
           </div>

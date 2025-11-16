@@ -6,12 +6,13 @@ import SearchBar from '@/components/SearchBar'
 import Link from 'next/link'
 
 export default async function HomePage() {
+  // Fetch both blog and shop data
   const [posts, blogCategories, featuredProducts, productCategories] = await Promise.all([
     getPosts(),
     getCategories(),
     getFeaturedProducts(),
     getProductCategories()
-  ]);
+  ])
   
   // Get featured post (most recent)
   const featuredPost = posts[0];
@@ -40,7 +41,12 @@ export default async function HomePage() {
       {/* Blog Categories Section */}
       <section className="py-16 bg-gray-50">
         <div className="container">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Browse Articles by Category</h2>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-bold text-gray-900">Browse Blog Categories</h2>
+            <Link href="/search" className="text-primary hover:text-primary/80 font-medium">
+              View All Articles →
+            </Link>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {blogCategories.map((category) => (
               <Link
@@ -66,7 +72,7 @@ export default async function HomePage() {
       {/* Recent Posts Section */}
       <section className="py-16">
         <div className="container">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold text-gray-900">Latest Articles</h2>
             <Link href="/search" className="text-primary hover:text-primary/80 font-medium">
               View All →
@@ -84,32 +90,15 @@ export default async function HomePage() {
         </div>
       </section>
       
-      {/* Featured Products Section */}
-      {featuredProducts.length > 0 && (
-        <section className="py-16 bg-gray-50">
-          <div className="container">
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">Featured Gear</h2>
-                <p className="text-gray-600">Premium surf equipment for your next adventure</p>
-              </div>
-              <Link href="/shop" className="text-primary hover:text-primary/80 font-medium">
-                Shop All →
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProducts.slice(0, 3).map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-      
       {/* Shop Categories Section */}
-      <section className="py-16">
+      <section className="py-16 bg-gray-50">
         <div className="container">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Shop by Category</h2>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-bold text-gray-900">Shop by Category</h2>
+            <Link href="/shop" className="text-primary hover:text-primary/80 font-medium">
+              View All Products →
+            </Link>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {productCategories.map((category) => (
               <Link
@@ -142,6 +131,25 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+      
+      {/* Featured Products Section */}
+      {featuredProducts.length > 0 && (
+        <section className="py-16">
+          <div className="container">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold text-gray-900">Featured Products</h2>
+              <Link href="/shop" className="text-primary hover:text-primary/80 font-medium">
+                Shop All →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredProducts.slice(0, 3).map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   )
 }
