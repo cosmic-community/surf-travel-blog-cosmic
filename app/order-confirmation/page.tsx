@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useCart } from '@/components/CartContext'
 import Link from 'next/link'
 
-export default function OrderConfirmationPage() {
+function OrderConfirmationContent() {
   const searchParams = useSearchParams()
   const { clearCart } = useCart()
   const [orderDetails, setOrderDetails] = useState<any>(null)
@@ -85,5 +85,26 @@ export default function OrderConfirmationPage() {
         </Link>
       </div>
     </div>
+  )
+}
+
+export default function OrderConfirmationPage() {
+  return (
+    <Suspense fallback={
+      <div className="py-16">
+        <div className="container max-w-2xl text-center">
+          <div className="mb-6 flex justify-center">
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center animate-pulse">
+              <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+            </div>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Loading...
+          </h1>
+        </div>
+      </div>
+    }>
+      <OrderConfirmationContent />
+    </Suspense>
   )
 }
