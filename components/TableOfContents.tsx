@@ -19,13 +19,21 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
   useEffect(() => {
     // Extract headings from markdown content
     const headingRegex = /^(#{2,3})\s+(.+)$/gm
-    const matches = [...content.matchAll(headingRegex)]
+    const matches = Array.from(content.matchAll(headingRegex))
     
-    const tocItems: TOCItem[] = matches.map((match, index) => ({
-      id: `heading-${index}`,
-      text: match[2],
-      level: match[1].length
-    }))
+    const tocItems: TOCItem[] = matches
+      .map((match, index) => {
+        // Ensure match[2] exists and is a string
+        const text = match[2]?.trim()
+        if (!text) return null
+        
+        return {
+          id: `heading-${index}`,
+          text: text,
+          level: match[1] ? match[1].length : 2
+        }
+      })
+      .filter((item): item is TOCItem => item !== null)
 
     setHeadings(tocItems)
 
