@@ -13,7 +13,7 @@ export default async function Header() {
             🏄 Surf Travel
           </Link>
           
-          {/* Navigation */}
+          {/* Navigation - merged both Search and Contact links */}
           <nav className="hidden md:flex items-center gap-8">
             <Link
               href="/"
@@ -43,6 +43,12 @@ export default async function Header() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               Search
+            </Link>
+            <Link
+              href="/contact"
+              className="text-gray-700 hover:text-primary font-medium transition-colors"
+            >
+              Contact
             </Link>
           </nav>
           

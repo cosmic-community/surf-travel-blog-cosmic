@@ -17,7 +17,7 @@ export default async function HomePage() {
       {/* Hero Section with Featured Post */}
       {featuredPost && <FeaturedPost post={featuredPost} />}
       
-      {/* Search Section */}
+      {/* Search Section - from base branch */}
       <section className="py-12 bg-gradient-to-b from-gray-50 to-white">
         <div className="container">
           <div className="text-center mb-8">
