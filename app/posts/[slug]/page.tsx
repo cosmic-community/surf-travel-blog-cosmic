@@ -124,7 +124,8 @@ export default async function PostPage({ params }: PostPageProps) {
   const shareTitle = post.metadata?.title || post.title
 
   // Fetch related posts from same category
-  const relatedPosts = categories.length > 0 
+  // Changed: Added explicit check for categories[0] to prevent "possibly undefined" error
+  const relatedPosts = categories.length > 0 && categories[0]
     ? await getPostsByCategory(categories[0].id)
     : []
 
