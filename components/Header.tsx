@@ -13,7 +13,7 @@ export default async function Header() {
             🏄 Surf Travel
           </Link>
           
-          {/* Navigation - Merged: includes both Search (from base) and Contact (from your branch) */}
+          {/* Navigation - merged both Search and Contact links */}
           <nav className="hidden md:flex items-center gap-8">
             <Link
               href="/"
