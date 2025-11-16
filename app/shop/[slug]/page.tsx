@@ -5,6 +5,10 @@ import AddToCartButton from '@/components/AddToCartButton'
 import ProductRecommendations from '@/components/ProductRecommendations'
 import SocialShare from '@/components/SocialShare'
 import StructuredData from '@/components/StructuredData'
+import Breadcrumbs from '@/components/Breadcrumbs'
+import ProductReviews from '@/components/ProductReviews'
+import UrgencyIndicator from '@/components/UrgencyIndicator'
+import DiscountBadge from '@/components/DiscountBadge'
 import type { Metadata } from 'next'
 
 type Params = Promise<{ slug: string }>
@@ -69,6 +73,45 @@ export default async function ProductPage({ params }: { params: Params }) {
   const inStock = product.metadata?.in_stock ?? true
   const productName = product.metadata?.product_name || product.title
   const productDescription = product.metadata?.description || ''
+  const stockQuantity = product.metadata?.stock_quantity || 0
+
+  // Sample reviews for demonstration - in production, fetch from Cosmic
+  const sampleReviews = [
+    {
+      id: '1',
+      author: 'Jake M.',
+      rating: 5,
+      date: '2024-01-15',
+      title: 'Excellent quality!',
+      content: 'This product exceeded my expectations. The quality is outstanding and it arrived quickly.',
+      verified: true
+    },
+    {
+      id: '2',
+      author: 'Sarah K.',
+      rating: 4,
+      date: '2024-01-10',
+      title: 'Great value',
+      content: 'Really happy with this purchase. Works perfectly for my needs.',
+      verified: true
+    },
+    {
+      id: '3',
+      author: 'Mike R.',
+      rating: 5,
+      date: '2024-01-05',
+      title: 'Highly recommend',
+      content: 'Best purchase I\'ve made this year. Will definitely buy from this shop again.',
+      verified: false
+    }
+  ]
+
+  const breadcrumbs = [
+    { label: 'Home', href: '/' },
+    { label: 'Shop', href: '/shop' },
+    { label: product.metadata?.category?.metadata?.category_name || 'Products', href: `/shop?category=${product.metadata?.category?.slug}` },
+    { label: productName }
+  ]
 
   return (
     <div className="py-16">
@@ -78,6 +121,15 @@ export default async function ProductPage({ params }: { params: Params }) {
       />
 
       <div className="container">
+        <Breadcrumbs items={breadcrumbs} />
+
+        {/* Discount Badge - Show if product is featured */}
+        {product.metadata?.featured && (
+          <div className="mb-6">
+            <DiscountBadge code="SURF10" discount={10} expiresIn="2d 5h" />
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Images */}
           <div>
@@ -131,6 +183,14 @@ export default async function ProductPage({ params }: { params: Params }) {
               </div>
             )}
 
+            {/* Urgency Indicators */}
+            <div className="space-y-3 mb-6">
+              {stockQuantity > 0 && stockQuantity <= 10 && (
+                <UrgencyIndicator type="stock" value={stockQuantity} threshold={10} />
+              )}
+              <UrgencyIndicator type="demand" value={Math.floor(Math.random() * 20) + 5} />
+            </div>
+
             {/* Stock Status */}
             <div className="mb-6">
               {inStock ? (
@@ -181,6 +241,15 @@ export default async function ProductPage({ params }: { params: Params }) {
               />
             </div>
           </div>
+        </div>
+
+        {/* Product Reviews Section */}
+        <div className="mt-16">
+          <ProductReviews 
+            productId={product.id}
+            productName={productName}
+            reviews={sampleReviews}
+          />
         </div>
 
         {/* Product Recommendations */}
