@@ -4,22 +4,49 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About */}
           <div>
-            <h3 className="text-xl font-bold mb-4">🏄 Surf Shop</h3>
+            <h3 className="text-xl font-bold mb-4">🏄 Surf Travel & Shop</h3>
             <p className="text-gray-400">
-              Premium surf gear and equipment for riders of all levels. Quality products, expert advice, and fast shipping.
+              Your ultimate guide to surf destinations, techniques, and gear. Plus premium surf equipment for riders of all levels.
             </p>
           </div>
           
-          {/* Quick Links */}
+          {/* Blog Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+            <h3 className="text-lg font-semibold mb-4">Blog</h3>
+            <ul className="space-y-2">
+              <li>
+                <a href="/categories/destinations" className="text-gray-400 hover:text-white transition-colors">
+                  Destinations
+                </a>
+              </li>
+              <li>
+                <a href="/categories/tips-techniques" className="text-gray-400 hover:text-white transition-colors">
+                  Tips & Techniques
+                </a>
+              </li>
+              <li>
+                <a href="/categories/gear-reviews" className="text-gray-400 hover:text-white transition-colors">
+                  Gear Reviews
+                </a>
+              </li>
+              <li>
+                <a href="/search" className="text-gray-400 hover:text-white transition-colors">
+                  Search Articles
+                </a>
+              </li>
+            </ul>
+          </div>
+          
+          {/* Shop Links */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Shop</h3>
             <ul className="space-y-2">
               <li>
                 <a href="/shop" className="text-gray-400 hover:text-white transition-colors">
-                  Shop All Products
+                  All Products
                 </a>
               </li>
               <li>
@@ -40,15 +67,25 @@ export default function Footer() {
             </ul>
           </div>
           
-          {/* Customer Service */}
+          {/* Contact & Connect */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Customer Service</h3>
+            <h3 className="text-lg font-semibold mb-4">Connect</h3>
+            <ul className="space-y-2 mb-4">
+              <li>
+                <a href="/contact" className="text-gray-400 hover:text-white transition-colors">
+                  Contact Us
+                </a>
+              </li>
+            </ul>
             <p className="text-gray-400 mb-4">
-              Questions? We're here to help! Contact our team for product recommendations and support.
+              Follow us for the latest updates, tips, and product releases.
             </p>
             <div className="flex gap-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 Instagram
+              </a>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                Twitter
               </a>
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 Facebook
@@ -58,7 +95,7 @@ export default function Footer() {
         </div>
         
         <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
-          <p>&copy; {currentYear} Surf Shop. All rights reserved.</p>
+          <p>&copy; {currentYear} Surf Travel & Shop. All rights reserved.</p>
         </div>
       </div>
     </footer>
