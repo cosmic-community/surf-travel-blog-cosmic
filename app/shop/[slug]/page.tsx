@@ -61,17 +61,8 @@ export default async function ProductPage({ params }: { params: Params }) {
   return (
     <div className="py-16">
       <StructuredData
-        type="Product"
-        data={{
-          name: productName,
-          description: product.metadata?.description || '',
-          image: mainImage?.imgix_url ? `${mainImage.imgix_url}?w=1200&h=1200&fit=crop&auto=format,compress` : '',
-          offers: {
-            price: price,
-            priceCurrency: 'USD',
-            availability: inStock ? 'InStock' : 'OutOfStock',
-          },
-        }}
+        type="product"
+        data={product}
       />
 
       <div className="container">
@@ -145,7 +136,6 @@ export default async function ProductPage({ params }: { params: Params }) {
               <SocialShare
                 url={`/shop/${product.slug}`}
                 title={productName}
-                description={product.metadata?.description || ''}
               />
             </div>
           </div>
