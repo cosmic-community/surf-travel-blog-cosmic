@@ -90,20 +90,23 @@ export default function ProductReviews({ productId, productName, reviews }: Prod
         </div>
 
         <div className="space-y-2">
-          {[5, 4, 3, 2, 1].map((rating, index) => (
-            <div key={rating} className="flex items-center gap-3">
-              <span className="text-sm font-medium text-gray-700 w-8">{rating} ★</span>
-              <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-yellow-400"
-                  style={{
-                    width: `${reviews.length > 0 ? (ratingCounts[index] / reviews.length) * 100 : 0}%`
-                  }}
-                />
+          {[5, 4, 3, 2, 1].map((rating, index) => {
+            const count = ratingCounts[index] ?? 0; // Changed: Added null check with default value
+            return (
+              <div key={rating} className="flex items-center gap-3">
+                <span className="text-sm font-medium text-gray-700 w-8">{rating} ★</span>
+                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-yellow-400"
+                    style={{
+                      width: `${reviews.length > 0 ? (count / reviews.length) * 100 : 0}%`
+                    }}
+                  />
+                </div>
+                <span className="text-sm text-gray-600 w-8">{count}</span>
               </div>
-              <span className="text-sm text-gray-600 w-8">{ratingCounts[index]}</span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

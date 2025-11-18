@@ -24,10 +24,12 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
 
     while ((match = headingRegex.exec(content)) !== null) {
       const level = match[0].split('#').length - 1
-      const text = match[1].trim()
-      const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')
+      const text = match[1]?.trim(); // Changed: Added optional chaining
       
-      matches.push({ id, text, level })
+      if (text) { // Changed: Added null check
+        const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')
+        matches.push({ id, text, level })
+      }
     }
 
     setHeadings(matches)

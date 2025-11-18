@@ -45,15 +45,18 @@ export default function SocialProof() {
     let currentIndex = 0
     
     const showActivity = () => {
-      setCurrentActivity(activities[currentIndex])
-      setIsVisible(true)
-      
-      // Hide after 5 seconds
-      setTimeout(() => {
-        setIsVisible(false)
-      }, 5000)
-      
-      currentIndex = (currentIndex + 1) % activities.length
+      const activity = activities[currentIndex]; // Changed: Store in variable first
+      if (activity) { // Changed: Add null check
+        setCurrentActivity(activity)
+        setIsVisible(true)
+        
+        // Hide after 5 seconds
+        setTimeout(() => {
+          setIsVisible(false)
+        }, 5000)
+        
+        currentIndex = (currentIndex + 1) % activities.length
+      }
     }
 
     // Show first activity after 3 seconds
