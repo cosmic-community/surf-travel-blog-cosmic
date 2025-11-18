@@ -1,26 +1,30 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function ReadingProgress() {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    const updateProgress = () => {
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight
-      const scrolled = window.scrollY
-      const progress = (scrolled / scrollHeight) * 100
-      setProgress(Math.min(100, Math.max(0, progress)))
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight
+      const documentHeight = document.documentElement.scrollHeight
+      const scrollTop = window.scrollY
+      
+      const totalHeight = documentHeight - windowHeight
+      const currentProgress = (scrollTop / totalHeight) * 100
+      
+      setProgress(Math.min(currentProgress, 100))
     }
 
-    window.addEventListener('scroll', updateProgress, { passive: true })
-    updateProgress()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll() // Initial calculation
 
-    return () => window.removeEventListener('scroll', updateProgress)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
-    <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+    <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-gray-200">
       <div
         className="h-full bg-primary transition-all duration-150"
         style={{ width: `${progress}%` }}

@@ -7,6 +7,7 @@ interface RelatedPostsProps {
 }
 
 export default function RelatedPosts({ posts, currentPostId }: RelatedPostsProps) {
+  // Filter out current post and limit to 3 related posts
   const relatedPosts = posts
     .filter(post => post.id !== currentPostId)
     .slice(0, 3)
@@ -14,8 +15,8 @@ export default function RelatedPosts({ posts, currentPostId }: RelatedPostsProps
   if (relatedPosts.length === 0) return null
 
   return (
-    <section className="mt-16 pt-16 border-t border-gray-200">
-      <h2 className="text-2xl font-bold text-gray-900 mb-8">Related Articles</h2>
+    <div className="mt-16 pt-8 border-t border-gray-200">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Articles</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {relatedPosts.map((post) => (
           <Link
@@ -36,7 +37,7 @@ export default function RelatedPosts({ posts, currentPostId }: RelatedPostsProps
               {post.metadata?.title || post.title}
             </h3>
             {post.metadata?.publish_date && (
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-gray-600 mt-1">
                 {new Date(post.metadata.publish_date).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -47,6 +48,6 @@ export default function RelatedPosts({ posts, currentPostId }: RelatedPostsProps
           </Link>
         ))}
       </div>
-    </section>
+    </div>
   )
 }

@@ -9,14 +9,13 @@ interface FAQ {
 
 interface FAQSectionProps {
   faqs: FAQ[]
-  title?: string
 }
 
-export default function FAQSection({ faqs, title = 'Frequently Asked Questions' }: FAQSectionProps) {
+export default function FAQSection({ faqs }: FAQSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
-  // Generate FAQ schema for SEO
-  const faqSchema = {
+  // Generate JSON-LD structured data for FAQ
+  const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: faqs.map(faq => ({
@@ -29,48 +28,48 @@ export default function FAQSection({ faqs, title = 'Frequently Asked Questions' 
     }))
   }
 
+  const toggleFAQ = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index)
+  }
+
   return (
-    <section className="py-12 bg-gray-50">
+    <div className="bg-gray-50 rounded-lg p-8">
+      {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
+
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
       
-      <div className="container">
-        <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">{title}</h2>
-        
-        <div className="max-w-3xl mx-auto space-y-4">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg border border-gray-200 overflow-hidden"
+      <div className="space-y-4">
+        {faqs.map((faq, index) => (
+          <div key={index} className="bg-white rounded-lg border border-gray-200">
+            <button
+              onClick={() => toggleFAQ(index)}
+              className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
+              aria-expanded={openIndex === index}
             >
-              <button
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+              <span className="font-semibold text-gray-900">{faq.question}</span>
+              <svg
+                className={`w-5 h-5 text-gray-500 transition-transform ${
+                  openIndex === index ? 'transform rotate-180' : ''
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <span className="font-semibold text-gray-900">{faq.question}</span>
-                <svg
-                  className={`w-5 h-5 text-gray-500 transition-transform ${
-                    openIndex === index ? 'rotate-180' : ''
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {openIndex === index && (
-                <div className="px-6 pb-4 text-gray-600">
-                  {faq.answer}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {openIndex === index && (
+              <div className="px-4 pb-4 text-gray-600">
+                {faq.answer}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
-    </section>
+    </div>
   )
 }
