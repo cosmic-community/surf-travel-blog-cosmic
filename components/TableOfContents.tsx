@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-interface TOCItem {
+interface Heading {
   id: string
   text: string
   level: number
@@ -13,31 +13,28 @@ interface TableOfContentsProps {
 }
 
 export default function TableOfContents({ content }: TableOfContentsProps) {
-  const [headings, setHeadings] = useState<TOCItem[]>([])
+  const [headings, setHeadings] = useState<Heading[]>([])
   const [activeId, setActiveId] = useState<string>('')
 
   useEffect(() => {
     // Extract headings from markdown content
-    const headingRegex = /^(#{2,3})\s+(.+)$/gm
-    const matches = Array.from(content.matchAll(headingRegex))
-    
-    const tocItems: TOCItem[] = matches
-      .map((match, index) => {
-        // Ensure match[2] exists and is a string
-        const text = match[2]?.trim()
-        if (!text) return null
-        
-        return {
-          id: `heading-${index}`,
-          text: text,
-          level: match[1] ? match[1].length : 2
-        }
-      })
-      .filter((item): item is TOCItem => item !== null)
+    const headingRegex = /^#{2,3}\s+(.+)$/gm
+    const matches: Heading[] = []
+    let match
 
-    setHeadings(tocItems)
+    while ((match = headingRegex.exec(content)) !== null) {
+      const level = match[0].split('#').length - 1
+      const text = match[1].trim()
+      const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')
+      
+      matches.push({ id, text, level })
+    }
 
-    // Track active heading on scroll
+    setHeadings(matches)
+  }, [content])
+
+  useEffect(() => {
+    // Track active heading based on scroll position
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -46,43 +43,46 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
           }
         })
       },
-      { rootMargin: '-80px 0px -80% 0px' }
+      { rootMargin: '-100px 0px -80% 0px' }
     )
 
-    // Observe all headings in the content
-    document.querySelectorAll('h2, h3').forEach((heading) => {
-      observer.observe(heading)
+    // Observe all heading elements
+    headings.forEach(({ id }) => {
+      const element = document.getElementById(id)
+      if (element) observer.observe(element)
     })
 
     return () => observer.disconnect()
-  }, [content])
+  }, [headings])
 
   if (headings.length === 0) return null
 
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 sticky top-24">
-      <h3 className="text-lg font-bold text-gray-900 mb-4">Table of Contents</h3>
-      <nav>
-        <ul className="space-y-2">
-          {headings.map((heading) => (
-            <li
-              key={heading.id}
-              className={`${heading.level === 3 ? 'ml-4' : ''}`}
-            >
-              <a
-                href={`#${heading.id}`}
-                className={`text-sm hover:text-primary transition-colors ${
-                  activeId === heading.id
-                    ? 'text-primary font-semibold'
-                    : 'text-gray-600'
-                }`}
+    <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+        <h3 className="font-bold text-gray-900 mb-3">Table of Contents</h3>
+        <nav>
+          <ul className="space-y-2">
+            {headings.map((heading) => (
+              <li
+                key={heading.id}
+                style={{ paddingLeft: `${(heading.level - 2) * 12}px` }}
               >
-                {heading.text}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+                <a
+                  href={`#${heading.id}`}
+                  className={`text-sm transition-colors hover:text-primary ${
+                    activeId === heading.id
+                      ? 'text-primary font-medium'
+                      : 'text-gray-600'
+                  }`}
+                >
+                  {heading.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </div>
   )
 }
